@@ -11,7 +11,7 @@ How to use
 ======================================
 Use the below command manually or in an automated fashion to get the backups.
 
-> python3 -m gitback -o xxx -d git_backup -t xxx --shallow
+> python3 -m gitback -o <your_github_orgname> -d git_backup -t <base64_encoded_github_pat> --shallow
 
 Use your github organization name for the -o argument above. This can be obtained from the github URL of your github account immediately followed by the https://github.com/
 Use the base64 encoded github personal access token (PAT) as the authentication credential for the -t arguument above. Use below link to learn how to generate a PAT.
