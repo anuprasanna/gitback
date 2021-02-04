@@ -62,9 +62,11 @@ Version: {__version__}
     def make_github_agent(self, args):
         """ Create github agent to auth """
         if args.token:
+            print (u'Login to GitHub with the PAT...')
             token = self.decodetoken(args.token)
             g = Github(token)
         else:
+            print (u'Login to GitHub with the username/password credentials...')
             user = args.user
             password = args.password
             if not user:
@@ -109,14 +111,26 @@ Version: {__version__}
                 print(u'Repo "{repo.full_name}" is a fork repo, so skipping...'.format(repo=repo))
             elif not path.exists(join(repo.full_name)):
                 clone_url = repo.clone_url
+
+                #print (u'Repo URL-{clone_url}'.format(clone_url=clone_url))
+             
+                repo_url = 'https://'+self.decodetoken(args.token)+':x-oauth-basic@github.com/'+args.org+'/'+repo.name
+
                 if args.ssh:
                     clone_url = repo.ssh_url
                 if args.shallow:
                     print(u'\nShallow cloning of repo "{repo.full_name}"'.format(repo=repo))
-                    call([u'git', u'clone', '--depth=1', clone_url, join(repo.full_name)])
+                    if args.token:
+                        call([u'git', u'clone', '--depth=1', repo_url, join(repo.full_name)])
+                    else:
+                        call([u'git', u'clone', '--depth=1', clone_url, join(repo.full_name)])
                 else:
                     print(u'\nCloning of repo "{repo.full_name}"'.format(repo=repo))
-                    call([u'git', u'clone', clone_url, join(repo.full_name)])
+                    
+                    if args.token:
+                        call([u'git', u'clone', repo_url, join(repo.full_name)])
+                    else:
+                        call([u'git', u'clone', clone_url, join(repo.full_name)])
                 
                 self.make_tarfile(args,join(repo.full_name),repo.name)
             elif not args.nopull:
